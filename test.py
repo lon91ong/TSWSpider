@@ -39,7 +39,7 @@ for rl in range(77,157):
     json_str = json_str.encode('raw_unicode_escape').decode('raw_unicode_escape').replace(r'\/\/', '//').replace(r'\/', '/')
     #print('jsonStr:',json_str[41:-2])
     #json_data = json.loads(json_str.split("(")[1].split(")")[0])
-    json_data = loads(json_str[41:-2])
+    json_data = loads(json_str[json_str.index('({')+1:-2])
     
     mp4_url_list = [x["file"] for x in json_data["playlist"]]
     name_list = [x["pid"] for x in json_data["playlist"]]
