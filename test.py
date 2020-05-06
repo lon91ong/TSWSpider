@@ -65,4 +65,4 @@ def get_dir_size(dir_path):
         size += os.path.getsize(dir_path + "/" + file_name)
     return round(size / 1024 / 1024, 2)
 
-print(get_dir_size("./史上最强赘婿"))
+print('{} MB'.format(get_dir_size("./史上最强赘婿")))
