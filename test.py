@@ -53,6 +53,7 @@ for rl in range(77,157):
         with open('./史上最强赘婿/'+str(name_list[i])+'.mp3',"wb") as f:
             f.write(mp4.content)
             f.close()
+            print('{}.mp3 下载完成！'.format(name_list[i]))
 
 import os
 print(os.listdir("./史上最强赘婿"))
