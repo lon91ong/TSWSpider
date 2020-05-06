@@ -10,7 +10,7 @@ novelID = '1688'
 novelName = '史上最强赘婿'
 #cookie = {'PHPSESSID':'atutpbhgs4h1gdsb3gjpncdkn6'}  # 这个需要手动提取
 
-for rl in range(19,22):
+for rl in range(19,21):
     ref_str = "https://www.ting22.com/ting/{}-{}.html".format(novelID,str(rl))
     #cookie['shistory'] = quote('think:[{}]'.format(quote(novelName)))
     #cookie[novelID+'_setURL'] = ref_str
@@ -31,8 +31,7 @@ for rl in range(19,22):
     }
     getstr = "https://www.ting22.com/api.php?c=Json&id="+novelID+"&page="+str(rl+1)+"&pagesize=10&callback=jQuery21403942595757035292_{}&_={}".format(sign, sign+1)
     print('GET:',getstr)
-    response = requests.get(
-        getstr, headers=headers)
+    response = requests.get(getstr, headers=headers)
     
     json_str = response.text
     json_str = json_str.encode('raw_unicode_escape').decode('raw_unicode_escape').replace(r'\/\/', '//').replace(r'\/', '/')
@@ -45,8 +44,8 @@ for rl in range(19,22):
     mp4_real_url_list = [''.join(map(chr, [int(i) for i in s.split("*")])) for s in mp4_url_list]
     
     print(mp4_real_url_list)
-    print(name_list[0])
-    ''' # 下载
+    print(name_list)
+    '''
     for i in range(len(mp4_url_list)):
         mp4 = requests.get(mp4_real_url_list[i])
         with open('./'+novelName+'/'+str(name_list[i])+'.mp3',"wb") as f:
