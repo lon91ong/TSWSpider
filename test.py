@@ -8,7 +8,7 @@ from json import loads
 
 novelID = '1688'
 novelName = '史上最强赘婿'
-#cookie = {'PHPSESSID':'atutpbhgs4h1gdsb3gjpncdkn6'}  # 这个需要手动提取
+#cookie = {'PHPSESSID':'atutpbhgs4h1gdsb3gjpncdkn6'}
 
 for rl in range(19,21):
     ref_str = "https://www.ting22.com/ting/{}-{}.html".format(novelID,str(rl))
@@ -45,7 +45,7 @@ for rl in range(19,21):
     
     print(mp4_real_url_list)
     print(name_list)
-    '''
+    ''' # 下载
     for i in range(len(mp4_url_list)):
         mp4 = requests.get(mp4_real_url_list[i])
         with open('./'+novelName+'/'+str(name_list[i])+'.mp3',"wb") as f:
