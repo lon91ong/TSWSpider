@@ -1,21 +1,16 @@
 # -*- coding: utf-8 -*-
 
 import requests
-from time import time
+from time import time, sleep
+from random import choice
 from json import loads
 from pprint import pprint
 
-#path = "104*116*116*112*58*47*47*97*117*100*105*111*46*99*111*115*46*120*109*99*100*110*46*99*111*109*47*103*114*111*117*112*55*48*47*77*48*66*47*54*66*47*69*68*47*119*75*103*79*122*108*52*72*71*116*67*105*114*117*68*95*65*70*108*89*74*66*76*108*79*117*89*52*55*48*46*109*52*97"
-
-#def jiema(s):
-#    return ''.join(map(chr, [int(i) for i in s.split("*")]))
-
-for rl in range(1,158):
+for rl in range(1,159):
     ref_str = "https://www.ting22.com/ting/1688-"+str(rl)+"1.html"
     cookie_str = "shistory=think%3A%5B%22%25E5%258F%25B2%25E4%25B8%258A%25E6%259C%2580%25E5%25BC%25BA%25E8%25B5%2598%25E5%25A9%25BF%22%5D; PHPSESSID=atutpbhgs4h1gdsb3gjpncdkn6; 1688_setNAME=%E5%8F%B2%E4%B8%8A%E6%9C%80%E5%BC%BA%E8%B5%98%E5%A9%BF(%E9%AB%98%E6%99%BA%E5%95%86%E8%A3%85X%E6%89%93%E8%84%B8)%20%E7%AC%AC721%E7%AB%A0; 1688_setURL=" + ref_str + "; index_setID=1688"
     cookie = {i.split("=")[0]: i.split("=")[1] for i in cookie_str.split("; ")}
-    
-    sign = str(int(round(time() * 1000)))
+    sign = str(int(round(time() * 1000)))  # 时间戳
     
     headers = {
         "Accept": "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01",
@@ -52,6 +47,8 @@ for rl in range(1,158):
             f.write(mp4.content)
             f.close()
             print('{}.mp3 下载完成！'.format(name_list[i]))
+            
+    sleep(choice([0.3, 0.5, 0.8, 1.1, 1.5, 1.8, 2, 2.3, 2.5]))
 
 import os
 print(os.listdir("./史上最强赘婿"))
