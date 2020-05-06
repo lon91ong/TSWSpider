@@ -10,7 +10,7 @@ from pprint import pprint
 #def jiema(s):
 #    return ''.join(map(chr, [int(i) for i in s.split("*")]))
 
-for rl in range(77,157):
+for rl in range(1,158):
     ref_str = "https://www.ting22.com/ting/1688-"+str(rl)+"1.html"
     cookie_str = "shistory=think%3A%5B%22%25E5%258F%25B2%25E4%25B8%258A%25E6%259C%2580%25E5%25BC%25BA%25E8%25B5%2598%25E5%25A9%25BF%22%5D; PHPSESSID=atutpbhgs4h1gdsb3gjpncdkn6; 1688_setNAME=%E5%8F%B2%E4%B8%8A%E6%9C%80%E5%BC%BA%E8%B5%98%E5%A9%BF(%E9%AB%98%E6%99%BA%E5%95%86%E8%A3%85X%E6%89%93%E8%84%B8)%20%E7%AC%AC721%E7%AB%A0; 1688_setURL=" + ref_str + "; index_setID=1688"
     cookie = {i.split("=")[0]: i.split("=")[1] for i in cookie_str.split("; ")}
@@ -32,13 +32,11 @@ for rl in range(77,157):
     }
     
     response = requests.get(
-        "https://www.ting22.com/api.php?c=Json&id=1688&page="+str(rl+1)+"&pagesize=10&callback=jQuery21403942595757035292_{}&_={}".format(
-            sign, sign), headers=headers)
+        "https://www.ting22.com/api.php?c=Json&id=1688&page="+str(rl+1)+"&pagesize=10&callback=jQuery21403942595757035292_{}&_={}".format(sign, sign), headers=headers)
     
     json_str = response.text
     json_str = json_str.encode('raw_unicode_escape').decode('raw_unicode_escape').replace(r'\/\/', '//').replace(r'\/', '/')
     #print('jsonStr:',json_str[41:-2])
-    #json_data = json.loads(json_str.split("(")[1].split(")")[0])
     json_data = loads(json_str[json_str.index('({')+1:-2])
     
     mp4_url_list = [x["file"] for x in json_data["playlist"]]
