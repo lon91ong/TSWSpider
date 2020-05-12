@@ -31,7 +31,7 @@ for rl in range(19,21):
         "Sec-Fetch-Site": "same-origin"
     }
     getstr = "https://www.ting22.com/api.php?c=Json&id="+novelID+"&page="+str(rl+1)+"&pagesize=10&callback=jQuery21403942595757035292_{}&_={}".format(sign, sign+1)
-    print('GET:',getstr)
+    #print('GET:',getstr)
     response = requests.get(getstr, headers=headers)
     
     json_str = response.text.replace(r'\/', '/')
@@ -42,8 +42,8 @@ for rl in range(19,21):
     #print(json_data["playlist"][0]["trackName"].split('(')[1][:-1])
     name_list = [x["pid"] for x in json_data["playlist"]]
     
-    print(mp4_url_list)
-    print(name_list)
+    #print('文件地址:\n', mp4_url_list)
+    print('章节:', name_list)
     # 下载
     for i in range(len(mp4_url_list)):
         if se(r'(?<=/)\d+(?=\$xm)', mp4_url_list[i]) is not None: # 免费试听节目
