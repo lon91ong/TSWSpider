@@ -4,6 +4,7 @@ import requests
 from time import time, sleep
 from random import choice
 from json import loads
+from re import search as se
 #from urllib.parse import quote
 
 novelID = '1688'
@@ -24,7 +25,7 @@ for rl in range(19,21):
         "X-Requested-With": "XMLHttpRequest",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36",
         "Referer": ref_str,
-        "Sign": sign,
+        "Sign": str(sign),
         "Sec-Fetch-Dest": "empty",
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Site": "same-origin"
@@ -33,26 +34,26 @@ for rl in range(19,21):
     print('GET:',getstr)
     response = requests.get(getstr, headers=headers)
     
-    json_str = response.text
-    json_str = json_str.encode('raw_unicode_escape').decode('raw_unicode_escape').replace(r'\/\/', '//').replace(r'\/', '/')
-    #print('jsonStr:',json_str[41:-2])
+    json_str = response.text.replace(r'\/', '/')
+    #json_str = json_str.encode('raw_unicode_escape').decode('raw_unicode_escape').replace(r'\/\/', '//').replace(r'\/', '/')
     json_data = loads(json_str[json_str.index('({')+1:-2])
     #cookie[novelID+'_setNAME'] = quote(novelName)+'('+quote(json_data["playlist"][0]["trackName"].split('(')[1][:-1])+')'+quote(' 第{}章'.format(rl*10+10))
-    mp4_url_list = [x["file"] for x in json_data["playlist"]]
+    mp4_url_list = [''.join(map(chr, [int(i) for i in x["file"].split("*")])) for x in json_data["playlist"]]
     #print(json_data["playlist"][0]["trackName"].split('(')[1][:-1])
     name_list = [x["pid"] for x in json_data["playlist"]]
-    mp4_real_url_list = [''.join(map(chr, [int(i) for i in s.split("*")])) for s in mp4_url_list]
     
-    print(mp4_real_url_list)
+    print(mp4_url_list)
     print(name_list)
-    ''' # 下载
+    # 下载
     for i in range(len(mp4_url_list)):
-        mp4 = requests.get(mp4_real_url_list[i])
+        if se(r'(?<=/)\d+(?=\$xm)', mp4_url_list[i]) is not None: # 免费试听节目
+            mp4 = requests.get('http://mobile.ximalaya.com/mobile/redirect/free/play/{}/0'.format(se(r'(?<=/)\d+(?=\$xm)', mp4_url_list[i]).group()))
+        else: # 收费节目
+            mp4 = requests.get(mp4_url_list[i])
         with open('./'+novelName+'/'+str(name_list[i])+'.mp3',"wb") as f:
             f.write(mp4.content)
             f.close()
             print('{}.mp3 -- 下载完成！'.format(name_list[i]))
-    '''
     sleep(choice([0.3, 0.5, 0.8, 1.1, 1.5, 1.8, 2, 2.3, 2.5]))
 
 import os
