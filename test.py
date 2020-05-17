@@ -5,13 +5,15 @@ from time import time, sleep
 from random import choice
 from json import loads
 from re import search as se
+from os import path, makedirs
 #from urllib.parse import quote
 
-novelID = '1688'
-novelName = '史上最强赘婿'
+novelID = '1766'
+novelName = '神级风水师'
 #cookie = {'PHPSESSID':'atutpbhgs4h1gdsb3gjpncdkn6'}
+if not path.exists(novelName): makedirs(novelName)
 
-for rl in range(19,21):
+for rl in range(0,128):
     ref_str = "https://www.ting22.com/ting/{}-{}.html".format(novelID,str(rl))
     #cookie['shistory'] = quote('think:[{}]'.format(quote(novelName)))
     #cookie[novelID+'_setURL'] = ref_str
