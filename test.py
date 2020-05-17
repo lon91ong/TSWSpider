@@ -48,6 +48,7 @@ for rl in range(0,128):
     print('章节:', name_list)
     # 下载
     for i in range(len(mp4_url_list)):
+        sleep(choice([0.3, 0.5, 0.8, 1.1]))
         if se(r'(?<=/)\d+(?=\$xm)', mp4_url_list[i]) is not None: # 免费试听节目
             mp4 = requests.get('http://mobile.ximalaya.com/mobile/redirect/free/play/{}/0'.format(se(r'(?<=/)\d+(?=\$xm)', mp4_url_list[i]).group()))
         else: # 收费节目
@@ -56,7 +57,7 @@ for rl in range(0,128):
             f.write(mp4.content)
             f.close()
             print('{}.mp3 -- 下载完成！'.format(name_list[i]))
-    sleep(choice([0.3, 0.5, 0.8, 1.1, 1.5, 1.8, 2, 2.3, 2.5]))
+    sleep(choice([2.2, 3.2, 4, 4.3, 4.9]))
 
 import os
 #print(os.listdir("./"+novelName))
