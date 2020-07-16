@@ -5,15 +5,15 @@ from time import time, sleep
 from random import choice
 from json import loads
 from re import search as se
-from os import path, makedirs
+from os import path, makedirs, listdir
 #from urllib.parse import quote
 
-novelID = '1766'
-novelName = '神级风水师'
+novelID = '1721'
+novelName = '剑来_下'
 #cookie = {'PHPSESSID':'atutpbhgs4h1gdsb3gjpncdkn6'}
 if not path.exists(novelName): makedirs(novelName)
 
-for rl in range(0,128):
+for rl in range(0,155):
     ref_str = "https://www.ting22.com/ting/{}-{}.html".format(novelID,str(rl))
     #cookie['shistory'] = quote('think:[{}]'.format(quote(novelName)))
     #cookie[novelID+'_setURL'] = ref_str
@@ -48,25 +48,41 @@ for rl in range(0,128):
     print('章节:', name_list)
     # 下载
     for i in range(len(mp4_url_list)):
-        sleep(choice([0.3, 0.5, 0.8, 1.1]))
-        if se(r'(?<=/)\d+(?=\$xm)', mp4_url_list[i]) is not None: # 免费试听节目
-            mp4 = requests.get('http://mobile.ximalaya.com/mobile/redirect/free/play/{}/0'.format(se(r'(?<=/)\d+(?=\$xm)', mp4_url_list[i]).group()))
-        else: # 收费节目
-            mp4 = requests.get(mp4_url_list[i])
-        with open('./'+novelName+'/'+str(name_list[i])+'.mp3',"wb") as f:
-            f.write(mp4.content)
-            f.close()
-            print('{}.mp3 -- 下载完成！'.format(name_list[i]))
-    sleep(choice([2.2, 3.2, 4, 4.3, 4.9]))
+        try: # 跳过已下载的文件
+            size = path.getsize('./'+novelName+'/'+str(name_list[i])+'.mp3')
+        except FileNotFoundError:
+            size = 0
+            pass
+        if size == 0:
+            sleep(choice([0.3, 0.5, 0.8, 1.1]))
+            try:
+                if se(r'(?<=/)\d+(?=\$xm)', mp4_url_list[i]) is not None: # 免费试听节目
+                    mp4 = requests.get('http://mobile.ximalaya.com/mobile/redirect/free/play/{}/0'.format(se(r'(?<=/)\d+(?=\$xm)', mp4_url_list[i]).group()),verify=False, timeout=10)
+                else: # 收费节目
+                    mp4 = requests.get(mp4_url_list[i],verify=False, timeout=10)
+                with open('./'+novelName+'/'+str(name_list[i])+'.mp3',"wb") as f:
+                    f.write(mp4.content)
+                    f.close()
+                    print('{}.mp3 -- 下载完成！-- {}MB'.format(name_list[i],round(len(mp4.content) / 1024 / 1024, 2)))
+            except:
+                sleep(30)
+                i-=1
+                pass
+        else:
+            size =i
+    if size == i: 
+        print('skip:'+str(rl*10+10))
+    else:
+        sleep(choice([2.2, 3.2, 4, 4.3, 4.9]))
 
-import os
+
 #print(os.listdir("./"+novelName))
 
 def get_dir_size(dir_path):
-    file_list = os.listdir(dir_path)
+    file_list = listdir(dir_path)
     size = 0
     for file_name in file_list:
-        size += os.path.getsize(dir_path + "/" + file_name)
+        size += path.getsize(dir_path + "/" + file_name)
     return round(size / 1024 / 1024, 2)
 
 print('{} MB'.format(get_dir_size("./"+novelName)))
