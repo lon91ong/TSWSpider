@@ -75,7 +75,6 @@ for rl in range(0,155):
     else:
         sleep(choice([2.2, 3.2, 4, 4.3, 4.9]))
 
-
 #print(os.listdir("./"+novelName))
 
 def get_dir_size(dir_path):
