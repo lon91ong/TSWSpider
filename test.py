@@ -38,22 +38,27 @@ for rl in range(0,155):
     
     json_str = response.text.replace(r'\/', '/')
     #json_str = json_str.encode('raw_unicode_escape').decode('raw_unicode_escape').replace(r'\/\/', '//').replace(r'\/', '/')
-    json_data = loads(json_str[json_str.index('({')+1:-2])
+    try:
+        json_data = loads(json_str[json_str.index('({')+1:-2])
+    except ValueError:
+        print('retry rl:{}'.format(rl))
+        rl -=1
+        next
     #cookie[novelID+'_setNAME'] = quote(novelName)+'('+quote(json_data["playlist"][0]["trackName"].split('(')[1][:-1])+')'+quote(' 第{}章'.format(rl*10+10))
     mp4_url_list = [''.join(map(chr, [int(i) for i in x["file"].split("*")])) for x in json_data["playlist"]]
     #print(json_data["playlist"][0]["trackName"].split('(')[1][:-1])
     name_list = [x["pid"] for x in json_data["playlist"]]
     
     #print('文件地址:\n', mp4_url_list)
-    print('章节:', name_list)
+    #print('章节:', name_list)
     # 下载
     for i in range(len(mp4_url_list)):
         try: # 跳过已下载的文件
-            size = path.getsize('./'+novelName+'/'+str(name_list[i])+'.mp3')
+            size = round(path.getsize('./'+novelName+'/'+str(name_list[i])+'.mp3') / 1024 / 1024, 2)
         except FileNotFoundError:
             size = 0
             pass
-        if size == 0:
+        if size < 2: # 小于2MB的重下一遍
             sleep(choice([0.3, 0.5, 0.8, 1.1]))
             try:
                 if se(r'(?<=/)\d+(?=\$xm)', mp4_url_list[i]) is not None: # 免费试听节目
@@ -67,13 +72,14 @@ for rl in range(0,155):
             except:
                 sleep(30)
                 i-=1
-                pass
+                next
         else:
             size =i
-    if size == i: 
-        print('skip:'+str(rl*10+10))
-    else:
+    if size != len(name_list)-1:
+        #print('skip:'+str(rl*10+10))
+    #else:
         sleep(choice([2.2, 3.2, 4, 4.3, 4.9]))
+
 
 #print(os.listdir("./"+novelName))
 
