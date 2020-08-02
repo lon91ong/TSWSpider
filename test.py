@@ -8,12 +8,12 @@ from re import search as se
 from os import path, makedirs, listdir
 #from urllib.parse import quote
 
-novelID = '1721'
-novelName = '剑来_下'
+novelID = '1740'
+novelName = '大王饶命'
 #cookie = {'PHPSESSID':'atutpbhgs4h1gdsb3gjpncdkn6'}
 if not path.exists(novelName): makedirs(novelName)
 
-for rl in range(0,155):
+for rl in range(0,116):
     ref_str = "https://www.ting22.com/ting/{}-{}.html".format(novelID,str(rl))
     #cookie['shistory'] = quote('think:[{}]'.format(quote(novelName)))
     #cookie[novelID+'_setURL'] = ref_str
@@ -34,16 +34,19 @@ for rl in range(0,155):
     }
     getstr = "https://www.ting22.com/api.php?c=Json&id="+novelID+"&page="+str(rl+1)+"&pagesize=10&callback=jQuery21403942595757035292_{}&_={}".format(sign, sign+1)
     #print('GET:',getstr)
-    response = requests.get(getstr, headers=headers)
+    sucFlag = False
+    while not sucFlag:
+        response = requests.get(getstr, headers=headers)
     
-    json_str = response.text.replace(r'\/', '/')
-    #json_str = json_str.encode('raw_unicode_escape').decode('raw_unicode_escape').replace(r'\/\/', '//').replace(r'\/', '/')
-    try:
-        json_data = loads(json_str[json_str.index('({')+1:-2])
-    except ValueError:
-        print('retry rl:{}'.format(rl))
-        rl -=1
-        next
+        json_str = response.text.replace(r'\/', '/')
+        #json_str = json_str.encode('raw_unicode_escape').decode('raw_unicode_escape').replace(r'\/\/', '//').replace(r'\/', '/')
+        try:
+            json_data = loads(json_str[json_str.index('({')+1:-2])
+            sucFlag = True
+        except ValueError:
+            print('retry rl:{}'.format(rl))
+            sleep(30)
+
     #cookie[novelID+'_setNAME'] = quote(novelName)+'('+quote(json_data["playlist"][0]["trackName"].split('(')[1][:-1])+')'+quote(' 第{}章'.format(rl*10+10))
     mp4_url_list = [''.join(map(chr, [int(i) for i in x["file"].split("*")])) for x in json_data["playlist"]]
     #print(json_data["playlist"][0]["trackName"].split('(')[1][:-1])
@@ -60,19 +63,21 @@ for rl in range(0,155):
             pass
         if size < 2: # 小于2MB的重下一遍
             sleep(choice([0.3, 0.5, 0.8, 1.1]))
-            try:
-                if se(r'(?<=/)\d+(?=\$xm)', mp4_url_list[i]) is not None: # 免费试听节目
-                    mp4 = requests.get('http://mobile.ximalaya.com/mobile/redirect/free/play/{}/0'.format(se(r'(?<=/)\d+(?=\$xm)', mp4_url_list[i]).group()),verify=False, timeout=10)
-                else: # 收费节目
-                    mp4 = requests.get(mp4_url_list[i],verify=False, timeout=10)
-                with open('./'+novelName+'/'+str(name_list[i])+'.mp3',"wb") as f:
-                    f.write(mp4.content)
-                    f.close()
-                    print('{}.mp3 -- 下载完成！-- {}MB'.format(name_list[i],round(len(mp4.content) / 1024 / 1024, 2)))
-            except:
-                sleep(30)
-                i-=1
-                next
+            sucFlag = False
+            while not sucFlag:
+                try:
+                    if se(r'(?<=/)\d+(?=\$xm)', mp4_url_list[i]) is not None: # 免费试听节目
+                        mp4 = requests.get('http://mobile.ximalaya.com/mobile/redirect/free/play/{}/0'.format(se(r'(?<=/)\d+(?=\$xm)', mp4_url_list[i]).group()),verify=False, timeout=10)
+                    else: # 收费节目
+                        mp4 = requests.get(mp4_url_list[i],verify=False, timeout=10)
+                    with open('./'+novelName+'/'+str(name_list[i])+'.mp3',"wb") as f:
+                        f.write(mp4.content)
+                        f.close()
+                        sucFlag = True
+                        print('{}.mp3 -- 下载完成！-- {}MB'.format(name_list[i],round(len(mp4.content) / 1024 / 1024, 2)))
+                except:
+                    print('retry rl:{},file No.{}'.format(rl,name_list[i]))
+                    sleep(30)
         else:
             size =i
     if size != len(name_list)-1:
